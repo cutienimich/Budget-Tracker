@@ -1,0 +1,732 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600&display=swap');
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  .terminal{
+    background:#0a0f0a;
+    min-height:100vh;
+    font-family:'Share Tech Mono',monospace;
+    color:#b0ffb0;
+    padding:0;
+    border:1px solid #1a2e1a;
+  }
+
+  .topbar{
+    background:#060c06;
+    border-bottom:1px solid #1e3a1e;
+    padding:10px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+
+  .topbar-brand{
+    font-family:'Orbitron',monospace;
+    font-size:13px;
+    font-weight:600;
+    color:#00e676;
+    letter-spacing:3px;
+  }
+
+  .topbar-brand span{color:#5a8a5a;}
+
+  .topbar-right{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    font-size:11px;
+    color:#3a6a3a;
+    letter-spacing:1px;
+  }
+
+  .dot-green{
+    width:7px;height:7px;border-radius:50%;
+    background:#00e676;
+    display:inline-block;
+    margin-right:6px;
+  }
+
+  .nav-strip{
+    background:#060c06;
+    border-bottom:1px solid #1e3a1e;
+    padding:0 20px;
+    display:flex;
+    gap:0;
+    overflow-x:auto;
+  }
+
+  .nav-tab{
+    font-family:'Share Tech Mono',monospace;
+    font-size:11px;
+    letter-spacing:1px;
+    color:#3a6a3a;
+    background:transparent;
+    border:none;
+    border-bottom:2px solid transparent;
+    padding:10px 16px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+
+  .nav-tab:hover{color:#7acc7a;}
+  .nav-tab.active{color:#00e676;border-bottom-color:#00e676;}
+
+  .content{padding:20px;}
+  .section{display:none;}
+  .section.active{display:block;}
+
+  .screen-label{
+    font-size:10px;
+    letter-spacing:3px;
+    color:#3a6a3a;
+    margin-bottom:16px;
+    padding-bottom:8px;
+    border-bottom:1px solid #1e3a1e;
+  }
+
+  .screen-label::before{content:'> ';}
+
+  .grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px;}
+  .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:16px;}
+
+  .atm-card{
+    background:#060c06;
+    border:1px solid #1e3a1e;
+    padding:14px 16px;
+    border-radius:3px;
+  }
+
+  .atm-card.hi{border-color:#2a5a2a;}
+  .atm-card.accent{border-color:#00e676;}
+
+  .card-label{
+    font-size:10px;
+    letter-spacing:2px;
+    color:#3a6a3a;
+    margin-bottom:6px;
+  }
+
+  .card-val{
+    font-family:'Orbitron',monospace;
+    font-size:16px;
+    font-weight:400;
+    color:#00e676;
+    letter-spacing:1px;
+  }
+
+  .card-val.warn{color:#e6b800;}
+  .card-val.dim{color:#5a9a5a;}
+  .card-val.off{color:#4a7a6a;}
+
+  .line{
+    border:none;
+    border-top:1px solid #1e3a1e;
+    margin:14px 0;
+  }
+
+  .term-input{
+    font-family:'Share Tech Mono',monospace;
+    font-size:12px;
+    background:#060c06;
+    border:1px solid #1e3a1e;
+    color:#b0ffb0;
+    padding:9px 12px;
+    width:100%;
+    outline:none;
+    border-radius:2px;
+    letter-spacing:1px;
+  }
+
+  .term-input:focus{border-color:#00e676;color:#00e676;}
+
+  .term-select{
+    font-family:'Share Tech Mono',monospace;
+    font-size:12px;
+    background:#060c06;
+    border:1px solid #1e3a1e;
+    color:#b0ffb0;
+    padding:9px 12px;
+    width:100%;
+    outline:none;
+    appearance:none;
+    border-radius:2px;
+    cursor:pointer;
+    letter-spacing:1px;
+  }
+
+  .term-select:focus{border-color:#00e676;}
+
+  .term-btn{
+    font-family:'Share Tech Mono',monospace;
+    font-size:11px;
+    letter-spacing:2px;
+    padding:10px 18px;
+    background:transparent;
+    border:1px solid #2a5a2a;
+    color:#5a9a5a;
+    cursor:pointer;
+    border-radius:2px;
+  }
+
+  .term-btn:hover{background:#0d1f0d;border-color:#00e676;color:#00e676;}
+  .term-btn:active{background:#0a1a0a;}
+  .term-btn.full{width:100%;margin-top:10px;}
+  .term-btn.danger{border-color:#2a4a2a;color:#3a6a3a;}
+  .term-btn.danger:hover{border-color:#e64040;color:#e64040;background:#1a0a0a;}
+
+  .input-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+  .input-row.tri{grid-template-columns:1fr 1fr 1fr;}
+  .field-lbl{font-size:10px;letter-spacing:1px;color:#3a6a3a;margin-bottom:5px;}
+
+  .tx-list{list-style:none;}
+
+  .tx-row{
+    display:flex;
+    align-items:center;
+    padding:9px 12px;
+    border-bottom:1px solid #0d1a0d;
+    font-size:11px;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+
+  .tx-row:hover{background:#060c06;}
+
+  .tx-sign{font-size:14px;width:16px;flex-shrink:0;}
+  .tx-date{color:#3a6a3a;font-size:10px;min-width:80px;}
+  .tx-cat{font-size:10px;letter-spacing:1px;color:#2a5a2a;border:1px solid #2a5a2a;padding:2px 6px;border-radius:2px;white-space:nowrap;}
+  .tx-note{color:#3a6a3a;font-size:10px;flex:1;min-width:60px;}
+  .tx-amt{font-family:'Orbitron',monospace;font-size:12px;text-align:right;min-width:90px;}
+
+  .bar-bg{
+    background:#060c06;
+    border:1px solid #1e3a1e;
+    height:12px;
+    border-radius:1px;
+    overflow:hidden;
+    margin:6px 0;
+  }
+
+  .bar-fill{height:100%;}
+
+  .goal-block{
+    background:#060c06;
+    border:1px solid #1e3a1e;
+    padding:14px;
+    margin-bottom:12px;
+    border-radius:3px;
+  }
+
+  .goal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
+  .goal-name{font-size:12px;color:#7acc7a;letter-spacing:1px;}
+  .goal-pct{font-family:'Orbitron',monospace;font-size:13px;color:#00e676;}
+
+  .brow{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;}
+  .brow-lbl{font-size:10px;letter-spacing:1px;color:#3a6a3a;width:88px;flex-shrink:0;}
+  .brow-bars{flex:1;min-width:80px;}
+  .brow-pct{font-family:'Orbitron',monospace;font-size:11px;width:38px;text-align:right;flex-shrink:0;}
+
+  .badge{display:inline-block;font-size:9px;letter-spacing:1px;padding:2px 6px;border:1px solid;border-radius:2px;}
+
+  .challenge-block{
+    background:#060c06;
+    border:1px solid #2a5a2a;
+    padding:16px;
+    margin-bottom:14px;
+    border-radius:3px;
+  }
+
+  .ch-title{font-family:'Orbitron',monospace;font-size:11px;letter-spacing:2px;color:#00e676;margin-bottom:6px;}
+  .ch-desc{font-size:10px;color:#3a6a3a;line-height:1.8;margin-bottom:12px;}
+
+  .days-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:10px;}
+  .day-cell{aspect-ratio:1;background:#0d1a0d;border:1px solid #1e3a1e;cursor:pointer;border-radius:1px;}
+  .day-cell.done{background:#00e676;border-color:#00e676;}
+
+  .empty-msg{text-align:center;padding:28px;font-size:11px;color:#1e3a1e;letter-spacing:1px;line-height:2.2;}
+
+  .del-btn{
+    font-family:'Share Tech Mono',monospace;font-size:10px;
+    background:transparent;border:1px solid #1a3a1a;color:#2a5a2a;
+    padding:3px 7px;cursor:pointer;border-radius:2px;flex-shrink:0;
+  }
+
+  .del-btn:hover{border-color:#e64040;color:#e64040;background:#1a0a0a;}
+
+  .scanline{
+    pointer-events:none;
+    position:absolute;top:0;left:0;right:0;bottom:0;
+    background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,10,0,0.07) 2px,rgba(0,10,0,0.07) 4px);
+    border-radius:inherit;
+  }
+</style>
+
+<div class="terminal">
+
+  <div class="topbar">
+    <div class="topbar-brand">BUDGET<span>SYS</span></div>
+    <div class="topbar-right">
+      <span><span class="dot-green"></span>SECURE</span>
+      <span id="clock">--:--:--</span>
+      <span>TERMINAL v2.1</span>
+    </div>
+  </div>
+
+  <div class="nav-strip">
+    <button class="nav-tab active" onclick="switchTab('overview',this)">OVERVIEW</button>
+    <button class="nav-tab" onclick="switchTab('transactions',this)">TRANSACTIONS</button>
+    <button class="nav-tab" onclick="switchTab('goals',this)">SAVINGS</button>
+    <button class="nav-tab" onclick="switchTab('budget',this)">BUDGET</button>
+    <button class="nav-tab" onclick="switchTab('challenge',this)">CHALLENGES</button>
+  </div>
+
+  <div class="content">
+
+    <div id="tab-overview" class="section active">
+      <div class="screen-label">ACCOUNT SUMMARY</div>
+      <div class="grid-4">
+        <div class="atm-card hi">
+          <div class="card-label">TOTAL INCOME</div>
+          <div class="card-val" id="ov-income">₱0.00</div>
+        </div>
+        <div class="atm-card hi">
+          <div class="card-label">TOTAL EXPENSES</div>
+          <div class="card-val warn" id="ov-expense">₱0.00</div>
+        </div>
+        <div class="atm-card accent">
+          <div class="card-label">NET BALANCE</div>
+          <div class="card-val" id="ov-balance">₱0.00</div>
+        </div>
+        <div class="atm-card hi">
+          <div class="card-label">SAVINGS RATE</div>
+          <div class="card-val off" id="ov-rate">0.00%</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="atm-card">
+          <div class="card-label">TOP CATEGORIES</div>
+          <hr class="line">
+          <div id="ov-cats"><div class="empty-msg">NO EXPENSE DATA</div></div>
+        </div>
+        <div class="atm-card">
+          <div class="card-label">RECENT ACTIVITY</div>
+          <hr class="line">
+          <ul class="tx-list" id="ov-recent"></ul>
+          <div id="ov-recent-empty" class="empty-msg">NO TRANSACTIONS FOUND</div>
+        </div>
+      </div>
+
+      <div class="atm-card hi">
+        <div class="card-label">MONTHLY REPORT</div>
+        <hr class="line">
+        <div id="ov-monthly" style="font-size:11px;color:#3a6a3a;line-height:2;">AWAITING DATA INPUT...</div>
+      </div>
+    </div>
+
+    <div id="tab-transactions" class="section">
+      <div class="screen-label">INCOME / EXPENSE ENTRY</div>
+      <div class="atm-card accent" style="margin-bottom:16px;">
+        <div class="card-label">NEW TRANSACTION</div>
+        <hr class="line">
+        <div class="input-row">
+          <div><div class="field-lbl">TYPE</div><select class="term-select" id="tx-type"><option value="income">+ INCOME</option><option value="expense">- EXPENSE</option></select></div>
+          <div><div class="field-lbl">AMOUNT (₱)</div><input class="term-input" type="number" id="tx-amount" placeholder="0.00" min="0" step="0.01"></div>
+        </div>
+        <div class="input-row">
+          <div>
+            <div class="field-lbl">CATEGORY</div>
+            <select class="term-select" id="tx-cat">
+              <option>FOOD</option><option>TRANSPORT</option><option>HOUSING</option><option>HEALTH</option>
+              <option>ENTERTAINMENT</option><option>SHOPPING</option><option>SALARY</option>
+              <option>FREELANCE</option><option>INVESTMENT</option><option>OTHER</option>
+            </select>
+          </div>
+          <div><div class="field-lbl">DATE</div><input class="term-input" type="date" id="tx-date"></div>
+        </div>
+        <div style="margin-bottom:10px;"><div class="field-lbl">NOTE / REFERENCE</div><input class="term-input" type="text" id="tx-note" placeholder="e.g. SM SUPERMARKET PAYMENT"></div>
+        <button class="term-btn full" onclick="addTransaction()">[ SUBMIT TRANSACTION ]</button>
+      </div>
+      <div class="atm-card">
+        <div class="card-label">TRANSACTION LOG</div>
+        <hr class="line">
+        <ul class="tx-list" id="tx-list"></ul>
+        <div id="tx-empty" class="empty-msg">NO RECORDS FOUND<br>INSERT FIRST TRANSACTION ABOVE</div>
+      </div>
+    </div>
+
+    <div id="tab-goals" class="section">
+      <div class="screen-label">SAVINGS GOALS</div>
+      <div class="atm-card hi" style="margin-bottom:16px;">
+        <div class="card-label">CREATE GOAL</div>
+        <hr class="line">
+        <div class="input-row">
+          <div><div class="field-lbl">GOAL NAME</div><input class="term-input" type="text" id="goal-name" placeholder="NEW LAPTOP"></div>
+          <div><div class="field-lbl">TARGET (₱)</div><input class="term-input" type="number" id="goal-target" placeholder="10000" min="0"></div>
+        </div>
+        <div class="input-row">
+          <div><div class="field-lbl">SAVED SO FAR (₱)</div><input class="term-input" type="number" id="goal-saved" placeholder="0" min="0"></div>
+          <div><div class="field-lbl">DEADLINE</div><input class="term-input" type="date" id="goal-deadline"></div>
+        </div>
+        <button class="term-btn full" onclick="addGoal()">[ ADD GOAL ]</button>
+      </div>
+      <div id="goals-list"></div>
+      <div id="goals-empty" class="empty-msg atm-card">NO GOALS REGISTERED<br>CREATE YOUR FIRST GOAL ABOVE</div>
+    </div>
+
+    <div id="tab-budget" class="section">
+      <div class="screen-label">MONTHLY BUDGET LIMITS</div>
+      <div class="atm-card hi" style="margin-bottom:16px;">
+        <div class="card-label">SET LIMIT</div>
+        <hr class="line">
+        <div class="input-row">
+          <div>
+            <div class="field-lbl">CATEGORY</div>
+            <select class="term-select" id="budget-cat">
+              <option>FOOD</option><option>TRANSPORT</option><option>HOUSING</option><option>HEALTH</option>
+              <option>ENTERTAINMENT</option><option>SHOPPING</option><option>OTHER</option>
+            </select>
+          </div>
+          <div><div class="field-lbl">MONTHLY LIMIT (₱)</div><input class="term-input" type="number" id="budget-limit" placeholder="5000" min="0"></div>
+        </div>
+        <button class="term-btn full" onclick="addBudget()">[ SET BUDGET LIMIT ]</button>
+      </div>
+      <div class="atm-card">
+        <div class="card-label">BUDGET STATUS — THIS MONTH</div>
+        <hr class="line">
+        <div id="budget-list"></div>
+        <div id="budget-empty" class="empty-msg">NO LIMITS CONFIGURED<br>SET CATEGORY LIMITS ABOVE</div>
+      </div>
+    </div>
+
+    <div id="tab-challenge" class="section">
+      <div class="screen-label">SAVINGS CHALLENGES</div>
+
+      <div class="grid-2">
+        <div class="challenge-block">
+          <div class="ch-title">52-WEEK PROTOCOL</div>
+          <div class="ch-desc">Save week number in pesos each week.<br>Week 1 = ₱1 ... Week 52 = ₱52.<br>Total yield: ₱1,378.00</div>
+          <div style="font-size:10px;color:#3a6a3a;margin-bottom:6px;">WEEK <span style="color:#00e676;" id="wk52-week">0</span> / 52</div>
+          <div class="bar-bg"><div class="bar-fill" id="wk52-bar" style="background:#00e676;width:1%;"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#3a6a3a;margin:6px 0 12px;">
+            <span>SAVED: <span style="color:#00e676;" id="wk52-saved">₱0.00</span></span>
+            <span>TARGET: ₱1,378.00</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="term-btn" onclick="completeWeek52()">[ MARK WEEK DONE ]</button>
+            <button class="term-btn danger" onclick="resetWeek52()">RESET</button>
+          </div>
+        </div>
+
+        <div class="challenge-block" style="border-color:#1e4a3a;">
+          <div class="ch-title" style="color:#3abccc;">NO-SPEND PROTOCOL</div>
+          <div class="ch-desc">Select days target. Mark each day<br>you avoid non-essential spending.</div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+            <div class="field-lbl">DAYS:</div>
+            <input class="term-input" type="number" id="nospend-days" value="30" min="7" max="365" style="width:70px;">
+            <button class="term-btn" onclick="startNoSpend()">[ INITIATE ]</button>
+          </div>
+          <div class="days-grid" id="nospend-grid"></div>
+          <div style="font-size:10px;color:#3a6a3a;">STREAK: <span style="color:#3abccc;" id="nospend-streak">0</span> DAYS CLEAN</div>
+        </div>
+      </div>
+
+      <div class="challenge-block" style="border-color:#1e3a5a;">
+        <div class="ch-title" style="color:#5aabf5;">CUSTOM CHALLENGE</div>
+        <div class="ch-desc">Define your own savings mission.</div>
+        <div class="input-row">
+          <div><div class="field-lbl">MISSION NAME</div><input class="term-input" type="text" id="custom-name" placeholder="COFFEE SKIP MONTH"></div>
+          <div><div class="field-lbl">TARGET (₱)</div><input class="term-input" type="number" id="custom-target" placeholder="5000"></div>
+        </div>
+        <div class="input-row">
+          <div><div class="field-lbl">DURATION (DAYS)</div><input class="term-input" type="number" id="custom-days" placeholder="30"></div>
+          <div><div class="field-lbl">AMOUNT SAVED (₱)</div><input class="term-input" type="number" id="custom-saved" placeholder="0"></div>
+        </div>
+        <button class="term-btn full" onclick="addCustomChallenge()">[ INITIATE MISSION ]</button>
+      </div>
+      <div id="custom-challenges"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let S={transactions:[],goals:[],budgets:{},week52:{week:0,saved:0},noSpend:{days:30,checked:[]},customChallenges:[]};
+
+  function save(){try{localStorage.setItem('budgatatm',JSON.stringify(S));}catch(e){}}
+  function load(){try{const d=localStorage.getItem('budgatatm');if(d)S=JSON.parse(d);}catch(e){}}
+
+  function fmt(n){return '₱'+parseFloat(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+
+  function clockTick(){
+    const n=new Date();
+    document.getElementById('clock').textContent=
+      n.getHours().toString().padStart(2,'0')+':'+
+      n.getMinutes().toString().padStart(2,'0')+':'+
+      n.getSeconds().toString().padStart(2,'0');
+  }
+  setInterval(clockTick,1000);clockTick();
+
+  function switchTab(tab,el){
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById('tab-'+tab).classList.add('active');
+    el.classList.add('active');
+    renderAll();
+  }
+
+  const CAT_COL={FOOD:'#00e676',TRANSPORT:'#3abccc',HOUSING:'#5aabf5',HEALTH:'#7acc7a',ENTERTAINMENT:'#a0d8a0',SHOPPING:'#3a8a6a',SALARY:'#00e676',FREELANCE:'#3abccc',INVESTMENT:'#5aabf5',OTHER:'#2a6a4a'};
+  function cc(c){return CAT_COL[c]||'#3a6a3a';}
+
+  function addTransaction(){
+    const type=document.getElementById('tx-type').value;
+    const amount=parseFloat(document.getElementById('tx-amount').value);
+    const cat=document.getElementById('tx-cat').value;
+    const date=document.getElementById('tx-date').value;
+    const note=document.getElementById('tx-note').value;
+    if(!amount||amount<=0){alert('INVALID AMOUNT');return;}
+    S.transactions.unshift({id:Date.now(),type,amount,cat,date:date||new Date().toISOString().split('T')[0],note});
+    document.getElementById('tx-amount').value='';
+    document.getElementById('tx-note').value='';
+    save();renderAll();
+  }
+
+  function delTx(id){S.transactions=S.transactions.filter(t=>t.id!==id);save();renderAll();}
+
+  function addGoal(){
+    const name=document.getElementById('goal-name').value.trim().toUpperCase();
+    const target=parseFloat(document.getElementById('goal-target').value);
+    const saved=parseFloat(document.getElementById('goal-saved').value)||0;
+    const deadline=document.getElementById('goal-deadline').value;
+    if(!name||!target){alert('INCOMPLETE PARAMETERS');return;}
+    S.goals.push({id:Date.now(),name,target,saved,deadline});
+    ['goal-name','goal-target','goal-saved','goal-deadline'].forEach(id=>document.getElementById(id).value='');
+    save();renderGoals();
+  }
+
+  function updateGoalSaved(id,v){const g=S.goals.find(g=>g.id===id);if(g){g.saved=parseFloat(v)||0;save();renderGoals();}}
+  function delGoal(id){S.goals=S.goals.filter(g=>g.id!==id);save();renderGoals();}
+
+  function addBudget(){
+    const cat=document.getElementById('budget-cat').value;
+    const limit=parseFloat(document.getElementById('budget-limit').value);
+    if(!limit||limit<=0){alert('INVALID LIMIT');return;}
+    S.budgets[cat]=limit;
+    document.getElementById('budget-limit').value='';
+    save();renderBudget();
+  }
+
+  function delBudget(cat){delete S.budgets[cat];save();renderBudget();}
+
+  function completeWeek52(){
+    if(S.week52.week>=52){alert('PROTOCOL COMPLETE. TOTAL SAVED: ₱1,378.00');return;}
+    S.week52.week++;S.week52.saved+=S.week52.week;
+    save();renderChallenge();
+  }
+
+  function resetWeek52(){if(!confirm('RESET 52-WEEK PROTOCOL?'))return;S.week52={week:0,saved:0};save();renderChallenge();}
+
+  function startNoSpend(){
+    const days=parseInt(document.getElementById('nospend-days').value)||30;
+    S.noSpend={days,checked:[]};
+    save();renderChallenge();
+  }
+
+  function toggleDay(i){
+    const idx=S.noSpend.checked.indexOf(i);
+    if(idx===-1)S.noSpend.checked.push(i);else S.noSpend.checked.splice(idx,1);
+    save();renderChallenge();
+  }
+
+  function addCustomChallenge(){
+    const name=document.getElementById('custom-name').value.trim().toUpperCase();
+    const target=parseFloat(document.getElementById('custom-target').value);
+    const days=parseInt(document.getElementById('custom-days').value);
+    const saved=parseFloat(document.getElementById('custom-saved').value)||0;
+    if(!name||!target||!days){alert('INCOMPLETE PARAMETERS');return;}
+    S.customChallenges.push({id:Date.now(),name,target,days,saved});
+    ['custom-name','custom-target','custom-days','custom-saved'].forEach(id=>document.getElementById(id).value='');
+    save();renderChallenge();
+  }
+
+  function delCustom(id){S.customChallenges=S.customChallenges.filter(c=>c.id!==id);save();renderChallenge();}
+  function updateCustomSaved(id,v){const c=S.customChallenges.find(c=>c.id===id);if(c){c.saved=parseFloat(v)||0;save();renderChallenge();}}
+
+  function renderTxList(){
+    const list=document.getElementById('tx-list');
+    const empty=document.getElementById('tx-empty');
+    if(!S.transactions.length){list.innerHTML='';empty.style.display='';return;}
+    empty.style.display='none';
+    list.innerHTML=S.transactions.map(t=>`
+      <li class="tx-row">
+        <span class="tx-sign" style="color:${t.type==='income'?'#00e676':'#e6b800'};">${t.type==='income'?'+':'-'}</span>
+        <span class="tx-date">${t.date}</span>
+        <span class="tx-cat" style="border-color:${cc(t.cat)};color:${cc(t.cat)};">${t.cat}</span>
+        <span class="tx-note">${t.note||'—'}</span>
+        <span class="tx-amt" style="color:${t.type==='income'?'#00e676':'#e6b800'};">${t.type==='income'?'+':'-'}${fmt(t.amount)}</span>
+        <button class="del-btn" onclick="delTx(${t.id})">DEL</button>
+      </li>`).join('');
+  }
+
+  function renderOverview(){
+    const income=S.transactions.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+    const expense=S.transactions.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+    const balance=income-expense;
+    const rate=income>0?(balance/income*100):0;
+    document.getElementById('ov-income').textContent=fmt(income);
+    document.getElementById('ov-expense').textContent=fmt(expense);
+    const balEl=document.getElementById('ov-balance');
+    balEl.textContent=fmt(balance);
+    balEl.className='card-val'+(balance<0?' warn':'');
+    document.getElementById('ov-rate').textContent=rate.toFixed(2)+'%';
+
+    const cats={};
+    S.transactions.filter(t=>t.type==='expense').forEach(t=>{cats[t.cat]=(cats[t.cat]||0)+t.amount;});
+    const sorted=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    const maxV=sorted[0]?.[1]||1;
+    const catEl=document.getElementById('ov-cats');
+    catEl.innerHTML=sorted.length?sorted.map(([cat,val])=>`
+      <div style="margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;">
+          <span style="color:${cc(cat)};letter-spacing:1px;">${cat}</span>
+          <span style="color:#e6b800;">${fmt(val)}</span>
+        </div>
+        <div class="bar-bg">
+          <div class="bar-fill" style="background:${cc(cat)};width:${Math.round(val/maxV*100)}%;"></div>
+        </div>
+      </div>`).join(''):'<div class="empty-msg">NO EXPENSE DATA</div>';
+
+    const recent=document.getElementById('ov-recent');
+    const rempty=document.getElementById('ov-recent-empty');
+    const recs=S.transactions.slice(0,5);
+    if(!recs.length){recent.innerHTML='';rempty.style.display='';}
+    else{
+      rempty.style.display='none';
+      recent.innerHTML=recs.map(t=>`
+        <li class="tx-row">
+          <span class="tx-date">${t.date}</span>
+          <span class="tx-cat" style="border-color:${cc(t.cat)};color:${cc(t.cat)};">${t.cat}</span>
+          <span class="tx-amt" style="color:${t.type==='income'?'#00e676':'#e6b800'};font-size:11px;">${t.type==='income'?'+':'-'}${fmt(t.amount)}</span>
+        </li>`).join('');
+    }
+
+    const mon=document.getElementById('ov-monthly');
+    if(income===0&&expense===0){mon.textContent='AWAITING DATA INPUT...';return;}
+    mon.innerHTML=`
+      <span style="color:#00e676;">INCOME: ${fmt(income)}</span>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <span style="color:#e6b800;">EXPENSES: ${fmt(expense)}</span>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <span style="color:${balance>=0?'#00e676':'#e64040'};">NET: ${fmt(balance)}</span>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <span style="color:#3abccc;">RATE: ${rate.toFixed(2)}%</span>
+    `;
+  }
+
+  function renderGoals(){
+    const list=document.getElementById('goals-list');
+    const empty=document.getElementById('goals-empty');
+    if(!S.goals.length){list.innerHTML='';empty.style.display='';return;}
+    empty.style.display='none';
+    list.innerHTML=S.goals.map(g=>{
+      const pct=Math.min(100,Math.round(g.saved/g.target*100));
+      const col=pct>=100?'#00e676':pct>=50?'#3abccc':'#5aabf5';
+      return `
+        <div class="goal-block">
+          <div class="goal-head">
+            <span class="goal-name">${g.name}</span>
+            <span class="goal-pct" style="color:${col};">${pct}%</span>
+          </div>
+          ${g.deadline?`<div style="font-size:10px;color:#2a5a2a;margin-bottom:6px;">DEADLINE: ${g.deadline}</div>`:''}
+          <div class="bar-bg"><div class="bar-fill" style="background:${col};width:${pct}%;"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#3a6a3a;margin:6px 0 12px;">
+            <span>SAVED: <span style="color:${col};">${fmt(g.saved)}</span></span>
+            <span>TARGET: <span style="color:#7acc7a;">${fmt(g.target)}</span></span>
+            <span>REMAINING: <span style="color:#5aabf5;">${fmt(Math.max(0,g.target-g.saved))}</span></span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span style="font-size:10px;color:#3a6a3a;">UPDATE:</span>
+            <input class="term-input" type="number" value="${g.saved}" style="width:110px;" onchange="updateGoalSaved(${g.id},this.value)">
+            <button class="del-btn" onclick="delGoal(${g.id})">REMOVE</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function renderBudget(){
+    const list=document.getElementById('budget-list');
+    const empty=document.getElementById('budget-empty');
+    const keys=Object.keys(S.budgets);
+    if(!keys.length){list.innerHTML='';empty.style.display='';return;}
+    empty.style.display='none';
+    const month=new Date().toISOString().slice(0,7);
+    const spent={};
+    S.transactions.filter(t=>t.type==='expense'&&t.date.startsWith(month)).forEach(t=>{spent[t.cat]=(spent[t.cat]||0)+t.amount;});
+    list.innerHTML=keys.map(cat=>{
+      const limit=S.budgets[cat];
+      const used=spent[cat]||0;
+      const pct=Math.min(100,Math.round(used/limit*100));
+      const col=pct>=100?'#e64040':pct>=75?'#e6b800':'#00e676';
+      const status=pct>=100?'OVER LIMIT':pct>=75?'WARNING':'NOMINAL';
+      return `
+        <div class="brow">
+          <div class="brow-lbl" style="color:${cc(cat)};">${cat}</div>
+          <div class="brow-bars">
+            <div class="bar-bg" style="margin:0;"><div class="bar-fill" style="background:${col};width:${pct}%;"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:#2a5a2a;margin-top:3px;">
+              <span>${fmt(used)}</span><span>${fmt(limit)}</span>
+            </div>
+          </div>
+          <div class="brow-pct" style="color:${col};">${pct}%</div>
+          <span class="badge" style="border-color:${col};color:${col};">${status}</span>
+          <button class="del-btn" onclick="delBudget('${cat}')">X</button>
+        </div>`;
+    }).join('');
+  }
+
+  function renderChallenge(){
+    const w=S.week52;
+    document.getElementById('wk52-week').textContent=w.week;
+    document.getElementById('wk52-saved').textContent=fmt(w.saved);
+    document.getElementById('wk52-bar').style.width=Math.max(1,Math.round(w.week/52*100))+'%';
+
+    const ns=S.noSpend;
+    let h='';
+    for(let i=0;i<ns.days;i++){
+      h+=`<div class="day-cell${ns.checked.includes(i)?' done':''}" onclick="toggleDay(${i})" title="DAY ${i+1}"></div>`;
+    }
+    document.getElementById('nospend-grid').innerHTML=h;
+    document.getElementById('nospend-streak').textContent=ns.checked.length;
+
+    const cc_div=document.getElementById('custom-challenges');
+    if(!S.customChallenges.length){cc_div.innerHTML='';return;}
+    cc_div.innerHTML=S.customChallenges.map(c=>{
+      const pct=Math.min(100,Math.round(c.saved/c.target*100));
+      const col=pct>=100?'#00e676':pct>=50?'#3abccc':'#5aabf5';
+      return `
+        <div class="challenge-block" style="border-color:${col}22;">
+          <div class="ch-title" style="color:${col};">${c.name}</div>
+          <div style="font-size:10px;color:#3a6a3a;margin-bottom:8px;">${c.days} DAYS &nbsp;|&nbsp; TARGET: ${fmt(c.target)}</div>
+          <div class="bar-bg"><div class="bar-fill" style="background:${col};width:${pct}%;"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#3a6a3a;margin:6px 0 12px;">
+            <span>SAVED: <span style="color:${col};">${fmt(c.saved)}</span></span>
+            <span>${pct}% COMPLETE</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span style="font-size:10px;color:#3a6a3a;">UPDATE:</span>
+            <input class="term-input" type="number" value="${c.saved}" style="width:110px;" onchange="updateCustomSaved(${c.id},this.value)">
+            <button class="del-btn" onclick="delCustom(${c.id})">ABORT</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function renderAll(){renderOverview();renderTxList();renderGoals();renderBudget();renderChallenge();}
+
+  document.getElementById('tx-date').value=new Date().toISOString().split('T')[0];
+  load();renderAll();
+</script>
